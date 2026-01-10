@@ -1,0 +1,12 @@
+.vscode
+# Compiled binaries
+matrix_multiplier
+series
+matrixgen
+
+# Object files
+*.o
+
+# Generated output
+parallel.txt
+series.txt
