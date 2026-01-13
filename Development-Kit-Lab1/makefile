@@ -10,7 +10,7 @@ LIBS = -lpthread -lm
 IO_SRC = lab1_IO.c
 IO_OBJ = lab1_IO.o
 
-all: main matrixgen serialtester
+all: main
 
 main: matrix_multiplier.o $(IO_OBJ)
 	$(CC) $(CFLAGS) matrix_multiplier.o $(IO_OBJ) -o main $(LIBS)
@@ -18,8 +18,8 @@ main: matrix_multiplier.o $(IO_OBJ)
 matrix_multiplier.o: matrix_multiplier.c lab1_IO.h timer.h
 	$(CC) $(CFLAGS) -c matrix_multiplier.c -o matrix_multiplier.o
 
-serialtester: series_multiplier.o $(IO_OBJ)
-	$(CC) $(CFLAGS) series_multiplier.o $(IO_OBJ) -o serialtester $(LIBS)
+series: series_multiplier.o $(IO_OBJ)
+	$(CC) $(CFLAGS) series_multiplier.o $(IO_OBJ) -o series $(LIBS)
 
 series_multiplier.o: series_multiplier.c lab1_IO.h timer.h
 	$(CC) $(CFLAGS) -c series_multiplier.c -o series_multiplier.o
@@ -38,4 +38,5 @@ clean:
 	rm -f matrix_multiplier
 	rm -f series
 	rm -f matrixgen
+	rm -f main
 	rm -f series.txt parallel.txt
