@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <math.h>
+#include "lab1_IO.h"
+#include "timer.h"
 /* Usage: ./main <p> where p is the number of threads
 
 */
@@ -19,17 +21,18 @@ pthread_t *threads;
 
 void allocate_matrices(int size){
 	//Size globals
-	A = malloc(size*sizeof(*A));
-	B = malloc(size*sizeof(*B));
+	//A = malloc(size*sizeof(*A));
+	//B = malloc(size*sizeof(*B));
 	C = malloc(size*sizeof(*C));
 	//Malloc error handling needed?
 	for(int i = 0; i < size; i++){
-		A[i] = malloc(size*sizeof(*A[i]));
-		B[i] = malloc(size*sizeof(*B[i]));
+		//A[i] = malloc(size*sizeof(*A[i]));
+		//B[i] = malloc(size*sizeof(*B[i]));
 		C[i] = malloc(size*sizeof(*C[i]));
 	}
 }
 
+/*
 void read_matrix(FILE *fp, int **matrix, int size){
 	for(int i = 0; i < size; i++){
 		for(int j = 0; j < size; j++){
@@ -37,7 +40,8 @@ void read_matrix(FILE *fp, int **matrix, int size){
 		}
 	}
 }
-
+REDUNDENT, DID NOT SEE IO FILE
+*/
 void clean_matrices(void){
 	for(int i = 0; i < matrix_size; i++){
 		free(A[i]);
@@ -51,7 +55,7 @@ void clean_matrices(void){
 	B = NULL;
 	C = NULL;
 }
-
+/*
 void open_matrix(){
         //Open matrix
         FILE *fp = fopen("data_input", "r");
@@ -67,6 +71,8 @@ void open_matrix(){
 
         fclose(fp);
 }
+REDUNDENT, DID NOT SEE IO FILE
+*/
 
 // Thread function:
 // Each thread uses this
@@ -118,7 +124,7 @@ int create_threads(int thread_count){
     }
     return 0; // no error
 }
-
+/*
 void print_matrix(int **matrix, int size){
 	//Print matrix
 	for(int i = 0; i < size; i++){
@@ -129,6 +135,8 @@ void print_matrix(int **matrix, int size){
 	}
 	printf("\n");
 }
+REDUNDENT, DID NOT SEE IO FILE
+*/
 
 int main(int argc, char *argv[]){
 	//Check for number of threads
@@ -152,9 +160,13 @@ int main(int argc, char *argv[]){
 	   so implement whatever functions to use them. There's a
 	   cleanup function at the end of the program
 	*/
-	open_matrix();
+	Lab1_loadinput(&A, &B, &matrix_size);
+	allocate_matrices(matrix_size);
 
 	//Create <p> threads
+	double start_time;
+	double end_time;
+	GET_TIME(start_time);
     if (create_threads(thread_count)) {
         // ERROR Checking
         printf("ERROR: Create threads");
@@ -165,12 +177,17 @@ int main(int argc, char *argv[]){
 	for (int i = 0; i < thread_count; i++) {
 		pthread_join(threads[i], NULL);
 	}
-	
+	GET_TIME(end_time);
+	double time = end_time - start_time;
+	Lab1_saveoutput(C, &matrix_size, time);
 	// Print Results
-	print_matrix(C, matrix_size);
+	//print_matrix(C, matrix_size);
 
 	// print_matrix(A, matrix_size);
 	// print_matrix(B, matrix_size);
-
+	free(thread_ranks);
+	free(threads);
+	thread_ranks = NULL;
+	threads = NULL;
 	clean_matrices(); //possibly redundent, leave at the end of program
 }
