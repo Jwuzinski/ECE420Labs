@@ -80,6 +80,7 @@ int main(int argc, char *argv[]){
 	GET_TIME(end_time);
 	double time = end_time - start_time;
 	Lab1_saveoutput(C, &matrix_size, time);
+	printf("Time taken: %f\n", time);
     //print_matrix(C, matrix_size);
 	// print_matrix(A, matrix_size);
 	// print_matrix(B, matrix_size);
