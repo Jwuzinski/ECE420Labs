@@ -98,8 +98,17 @@ int main(int argc, char *argv[]){
         printf("Usage: %s <p>\n", argv[0]);
         return -1;
     }
+
     thread_count = atoi(argv[1]); //Number of threads
     block_size = sqrt(thread_count);
+
+    // Check the constraints
+    if (matrix_size % block_size != 0) {
+        // n should be divisible by sqrt(p) which is block size
+        print("n should be divisible by sqrt(p).\n");
+        return -1;
+    }
+
     if(thread_count == 0){
         //Not a digit, return error
         return -2;

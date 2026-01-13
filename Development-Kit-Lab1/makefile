@@ -10,10 +10,10 @@ LIBS = -lpthread -lm
 IO_SRC = lab1_IO.c
 IO_OBJ = lab1_IO.o
 
-all: matrix_multiplier matrixgen series
+all: main matrixgen series
 
-matrix_multiplier: matrix_multiplier.o $(IO_OBJ)
-	$(CC) $(CFLAGS) matrix_multiplier.o $(IO_OBJ) -o matrix_multiplier $(LIBS)
+main: matrix_multiplier.o $(IO_OBJ)
+	$(CC) $(CFLAGS) matrix_multiplier.o $(IO_OBJ) -o main $(LIBS)
 
 matrix_multiplier.o: matrix_multiplier.c lab1_IO.h timer.h
 	$(CC) $(CFLAGS) -c matrix_multiplier.c -o matrix_multiplier.o
@@ -33,21 +33,9 @@ matrixgen.o: matrixgen.c
 $(IO_OBJ): $(IO_SRC) lab1_IO.h
 	$(CC) $(CFLAGS) -c $(IO_SRC) -o $(IO_OBJ)
 
-generate_matrix: matrixgen
-	./matrixgen -s $(SIZE) -b $(BOUND)
-
 clean:
 	rm -f *.o
 	rm -f matrix_multiplier
 	rm -f series
 	rm -f matrixgen
 	rm -f series.txt parallel.txt
-
-test_realquick: matrix_multiplier
-	./matrix_multiplier 4
-	rm -f matrix_multiplier
-
-compare_series_parallel: matrix_multiplier series
-	./series $(THREADS) > series.txt
-	./matrix_multiplier $(THREADS) > parallel.txt
-	diff -q series.txt parallel.txt
