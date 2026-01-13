@@ -105,7 +105,7 @@ int main(int argc, char *argv[]){
     // Check the constraints
     if (matrix_size % block_size != 0) {
         // n should be divisible by sqrt(p) which is block size
-        print("n should be divisible by sqrt(p).\n");
+        printf("n should be divisible by sqrt(p).\n");
         return -1;
     }
 
