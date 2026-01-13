@@ -125,8 +125,8 @@ int main(int argc, char *argv[]){
     allocate_matrices(matrix_size);
 
     //Create <p> threads
-    float start_time;
-    float end_time;
+    double start_time;
+    double end_time;
     GET_TIME(start_time);
     if (create_threads(thread_count)) {
         // ERROR Checking
@@ -140,8 +140,9 @@ int main(int argc, char *argv[]){
     }
     
     GET_TIME(end_time);
-    float time = end_time - start_time;
+    double time = end_time - start_time;
     Lab1_saveoutput(C, &matrix_size, time);
+    printf("Time taken: %f\n", time);
     
     free(thread_ranks);
     free(threads);
