@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
     
     /* Configure socket address */
     sock_var.sin_addr.s_addr = inet_addr(server_ip);
-    sock_var.sin_port = htons(server_port);
+    sock_var.sin_port = server_port;
     sock_var.sin_family = AF_INET;
     
     /* Bind socket to address */
