@@ -27,3 +27,4 @@ else
     echo "Exiting without terminating the server..."
 fi
 
+ebrabish@ualberta.ca
