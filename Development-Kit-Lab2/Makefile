@@ -20,7 +20,6 @@ client: client.c $(HEADERS)
 attacker: attacker.c $(HEADERS)
 	$(CC) $(CFLAGS) -o attacker attacker.c -lm
 
-
 # Clean up compiled files
 clean:
 	rm -f $(TARGETS) server_output_time_aggregated
