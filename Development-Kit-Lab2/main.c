@@ -1,9 +1,8 @@
 /*
- * Multithreaded Server for Concurrent Array Access
+ * Multithreaded Server
  * ECE420 Lab 2
  * 
  * This server handles concurrent read/write requests to a shared array of strings.
- * Uses per-position reader-writer locks for efficient synchronization.
  */
 
 #include <stdio.h>
@@ -154,7 +153,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     
-    /* Listen for incoming connections */
+    // Listen for incoming connections 
     if (listen(serverFileDescriptor, COM_NUM_REQUEST) < 0) {
         perror("listen failed");
         exit(1);
