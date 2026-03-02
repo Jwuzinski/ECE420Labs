@@ -7,8 +7,8 @@ CFLAGS = -Wall
 LIBS = -lm
 
 # common source that must be compiled+linked into programs that use it
-IO_SRC = lab3IO.c
-IO_OBJ = lab3IO.o
+IO_SRC = Lab3IO.c
+IO_OBJ = Lab3IO.o
 
 all: main
 
@@ -21,13 +21,13 @@ main.o: main.c $(IO_OBJ) timer.h
 generate: datagen
 	./datagen
 
-datagen: datagen.o
-	$(CC) $(CFLAGS) datagen.o -o datagen
+datagen: datagen.o $(IO_OBJ)
+	$(CC) $(CFLAGS) datagen.o $(IO_OBJ) -o datagen
 
-datagen.o: datagen.c
+datagen.o: datagen.c $(IO_OBJ) timer.h
 	$(CC) $(CFLAGS) -c datagen.c -o datagen.o
 
-$(IO_OBJ): $(IO_SRC) lab3IO.h
+$(IO_OBJ): $(IO_SRC) Lab3IO.h
 	$(CC) $(CFLAGS) -c $(IO_SRC) -o $(IO_OBJ)
 
 clean:
