@@ -6,41 +6,44 @@
 
 double **A;
 double *x;
-double **B; //TESTING MATRIX FOR SERIES
-int threads_num;
+double **B; // TESTING MATRIX FOR SERIES
+int thread_count;
 int size;
 
 // Algorithm 1 of lab manual
 void gaussian_elimination() {
-    for (int k = 0; k < size; k++) {
-        // PIVOTING: from row k to row n-1, find the row kp that has the maximum
-        // absolute value of the element in the kth column 
-        int big_row_index = k;
-        double big_value = 0;
+    // # pragma omp parallel num_threads(thread_count)
+    {
+        for (int k = 0; k < size; k++) {
+            // PIVOTING: from row k to row n-1, find the row kp that has the maximum
+            // absolute value of the element in the kth column 
+            int big_row_index = k;
+            double big_value = 0;
 
-        for (int i = k; i < size; i++) {
-            if (fabs(A[i][k]) > fabs(big_value)) {
-                big_value = A[i][k];
-                big_row_index = i;
+            for (int i = k; i < size; i++) {
+                if (fabs(A[i][k]) > fabs(big_value)) {
+                    big_value = A[i][k];
+                    big_row_index = i;
+                }
             }
-        }
 
-        // After finding big_row swap current row with big_row
-        // used size+1 to change swap the b vector as well
-        double temp;
-        for (int col = 0; col < size+1; col++) {
-            // Swap elements at each column index
-            temp = A[k][col];
-            A[k][col] = A[big_row_index][col];
-            A[big_row_index][col] = temp;
-        }
+            // After finding big_row swap current row with big_row
+            // used size+1 to change swap the b vector as well
+            double temp;
+            for (int col = 0; col < size+1; col++) {
+                // Swap elements at each column index
+                temp = A[k][col];
+                A[k][col] = A[big_row_index][col];
+                A[big_row_index][col] = temp;
+            }
 
-        // ELIMINATION
-        // TODO: DOUBLE CHECK
-        for (int row = k+1; row < size; row++) {
-            temp = A[row][k] / A[k][k];
-            for (int col = k; col < size+1; col++) {
-                A[row][col] -= (temp*A[k][col]);
+            // ELIMINATION
+            // TODO: DOUBLE CHECK
+            for (int row = k+1; row < size; row++) {
+                temp = A[row][k] / A[k][k];
+                for (int col = k; col < size+1; col++) {
+                    A[row][col] -= (temp*A[k][col]);
+                }
             }
         }
     }
@@ -101,9 +104,12 @@ void jordan_elimination_series() {
     }
 }
 
-int main() {
-
-    // TODO: get command line argument for number of threads (threads_num)
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        printf("USAGE: ./main [thread_count]");
+        return 1;
+    }
+    thread_count = strtol(argv[1], NULL, 10);
 
     // Load the input data
     if (Lab3LoadInput(&A, &size) != 0) {
