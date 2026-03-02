@@ -7,6 +7,7 @@
 double **A;
 double *x;
 double **B; //TESTING MATRIX FOR SERIES
+int threads_num;
 int size;
 
 // Algorithm 1 of lab manual
@@ -101,6 +102,9 @@ void jordan_elimination_series() {
 }
 
 int main() {
+
+    // TODO: get command line argument for number of threads (threads_num)
+
     // Load the input data
     if (Lab3LoadInput(&A, &size) != 0) {
         printf("ERROR: Couldn't load matrix");
@@ -142,6 +146,7 @@ int main() {
     double time = 0.0;
 
     // TODO: MAKE x BY DIVIDING b BY A
-    // b IS STORED IN A[][size] 
+    // b IS STORED IN A[][size]
+    // MAYBE DO IT IN THE JORDAN ELIMINATION STAGE???
     Lab3SaveOutput(x, size, time);
 }
