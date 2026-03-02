@@ -3,7 +3,7 @@ BOUND = 10
 THREADS = 1
 
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -fopenmp
 LIBS = -lm
 
 # common source that must be compiled+linked into programs that use it

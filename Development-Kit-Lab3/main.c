@@ -12,62 +12,70 @@ int size;
 
 // Algorithm 1 of lab manual
 void gaussian_elimination() {
-    // double START, EDD, ELAPSED;
-    // START = omp_get_wtime();
-    // PIVOTING + ELIMINATION
-    for (int k = 0; k < size; k++) {
-        // PIVOTING: from row k to row n-1, find the row kp that has the maximum
-        // absolute value of the element in the kth column 
-        int big_row_index = k;
-        double big_value = 0;
+    {
+        for (int k = 0; k < size; k++) {
+            double big_value = 0.0;
+            int big_row_index = k;
+            #pragma omp parallel num_threads(thread_count) shared(A, size, big_value, big_row_index)
+            {
+                double local_max_pair[2]; // [0] = value, [1] = index
+                local_max_pair[0] = 0.0;
+                local_max_pair[1] = k;
+                
+                #pragma omp for
+                for (int i = k; i < size; i++) {
+                    if (fabs(A[i][k]) > fabs(big_value))
+                    local_max_pair[0] = fabs(A[i][k]);
+                    local_max_pair[1] = i;
+                }
 
-        for (int i = k; i < size; i++) {
-            if (fabs(A[i][k]) > fabs(big_value)) {
-                big_value = A[i][k];
-                big_row_index = i;
-            }
-        }
+                if (local_max_pair[0] > big_value) {
+                    #pragma omp critical
+                    {
+                        big_value = local_max_pair[0];
+                        big_row_index = local_max_pair[1];
+                    }
+                }
 
-        // After finding big_row swap current row with big_row
-        // used size+1 to change swap the b vector as well
-        double temp;
-        for (int col = 0; col < size+1; col++) {
-            // Swap elements at each column index
-            temp = A[k][col];
-            A[k][col] = A[big_row_index][col];
-            A[big_row_index][col] = temp;
-        }
+                // SWAPPING
+                // After finding big_row swap current row with big_row
+                // used size+1 to change swap the b vector as well 
+                double temp;
+                #pragma omp single
+                {
+                    // #pragma omp for private(temp)
+                    for (int col = 0; col < size+1; col++) {
+                        // Swap elements at each column index
+                        temp = A[k][col];
+                        A[k][col] = A[big_row_index][col];
+                        A[big_row_index][col] = temp;
+                    }
+                }
 
-        // ELIMINATION
-        #pragma omp parallel for num_threads(thread_count) private(temp)
-        for (int row = k+1; row < size; row++) {
-            temp = A[row][k] / A[k][k];
-            for (int col = k; col < size+1; col++) {
-                A[row][col] -= (temp*A[k][col]);
+                // ELIMINATION
+                #pragma omp for private(temp)
+                for (int row = k+1; row < size; row++) {
+                    temp = A[row][k] / A[k][k];
+                    for (int col = k; col < size+1; col++) {
+                        A[row][col] -= (temp*A[k][col]);
+                    }
+                }
             }
         }
     }
-    
-    // EDD = omp_get_wtime();
-    // ELAPSED = EDD - START;
-    // printf("TIME ELAPSED: %f seconds\n", ELAPSED);
 }
 
 // Algorithm 2 of lab manual
 // TODO: DOUBLE CHECK
 void jordan_elimination() {
-    // double START, EDD, ELAPSED;
-    // START = omp_get_wtime();
+    // #pragma omp parallel for num_threads(thread_count)
     for (int k = size-1; k > 0; k--) {
         #pragma omp parallel for num_threads(thread_count)
         for (int row = 0; row < k; row++) {
-            A[row][size] -= (A[row][k] / A[k][k]) * A[k][size];
+            A[row][size] = A[row][size] - (A[row][k] / A[k][k]) * A[k][size];
             A[row][k] = 0;
         }
     }
-    // EDD = omp_get_wtime();
-    // ELAPSED = EDD - START;
-    // printf("TIME ELAPSED: Jordan Elimination %f seconds\n", ELAPSED);
 }
 
 void gaussian_elimination_series() {
