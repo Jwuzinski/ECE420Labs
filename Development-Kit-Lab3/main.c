@@ -44,8 +44,14 @@ void gaussian_elimination() {
 }
 
 // Algorithm 2 of lab manual
+// TODO: DOUBLE CHECK
 void jordan_elimination() {
-
+    for (int k = size-1; k > 0; k--) {
+        for (int row = 0; row < k; row++) {
+            A[row][size] -= (A[row][k] / A[k][k]) * A[k][size];
+            A[row][k] = 0;
+        }
+    }
 }
 
 int main() {
