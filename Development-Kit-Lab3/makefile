@@ -3,10 +3,9 @@ BOUND = 10
 THREADS = 1
 
 CC = gcc
-CFLAGS = -Wall
-LIBS = -lm
+CFLAGS = -Wall -fopenmp
+LIBS = -lm -fopenmp
 
-# common source that must be compiled+linked into programs that use it
 IO_SRC = Lab3IO.c
 IO_OBJ = Lab3IO.o
 
@@ -22,7 +21,7 @@ generate: datagen
 	./datagen
 
 datagen: datagen.o $(IO_OBJ)
-	$(CC) $(CFLAGS) datagen.o $(IO_OBJ) -o datagen
+	$(CC) $(CFLAGS) datagen.o $(IO_OBJ) -o datagen $(LIBS)
 
 datagen.o: datagen.c $(IO_OBJ) timer.h
 	$(CC) $(CFLAGS) -c datagen.c -o datagen.o
