@@ -110,7 +110,7 @@ int main (int argc, char* argv[]){
                 int global_i = s_idx + i; //global node
                 double sum = 0.0;
                 for(j = 0; j < nodehead[i].num_in_links; j++){
-                        int src = nodehead[i].inlinks[j] - 1; //get source ID
+                        int src = nodehead[i].inlinks[j]; //get source ID
                         sum += r_pre[src] / outdeg[src]; //equation 2
                 }
                 lr[i] = (1.0 - DAMPING_FACTOR) / nodecount + DAMPING_FACTOR * sum; //equation 3
@@ -130,10 +130,11 @@ int main (int argc, char* argv[]){
     } while(err >= EPSILON);
 
     GET_TIME(end);
-    Lab4_saveoutput(r, nodecount, end - start);
-
+    if(my_rank == 0){
+    	Lab4_saveoutput(r, nodecount, end - start);
+    }
     // post processing
-    node_destroy(nodehead, nodecount);
+    node_destroy(nodehead, ln);
     free(r);
     free(r_pre);
     free(lr);
